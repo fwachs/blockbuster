@@ -1,0 +1,167 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+         http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+
+	<changeSet id="1" author="fwachs">
+		<createTable tableName="film_type_prices">
+			<column name="id" type="bigint" autoIncrement="true">
+				<constraints primaryKey="true" nullable="false" />
+			</column>
+			<column name="amount" type="int(10)">
+				<constraints nullable="false" />
+			</column>
+			<column name="code" type="varchar(255)" />
+		</createTable>
+		<insert tableName="film_type_prices">
+			<column name="id" value="1" />
+			<column name="amount" value="30" />
+			<column name="code" value="BASIC" />
+		</insert>
+		<insert tableName="film_type_prices">
+			<column name="id" value="2" />
+			<column name="amount" value="40" />
+			<column name="code" value="PREMIUM" />
+		</insert>
+	</changeSet>
+
+	<changeSet id="2" author="fwachs">
+		<createTable tableName="film_types">
+			<column name="id" type="bigint" autoIncrement="true">
+				<constraints primaryKey="true" nullable="false" />
+			</column>
+			<column name="price_id" type="bigint">
+				<constraints nullable="false" />
+			</column>
+			<column name="code" type="varchar(255)" />
+			<column name="bonusPoints" type="int(10)" />
+			<column name="freeDays" type="int(10)" />
+		</createTable>
+		<insert tableName="film_types">
+			<column name="id" value="1" />
+			<column name="price_id" value="2" />
+			<column name="code" value="NEW" />
+			<column name="freeDays" value="0" />
+			<column name="bonusPoints" value="2" />
+		</insert>
+		<insert tableName="film_types">
+			<column name="id" value="2" />
+			<column name="price_id" value="1" />
+			<column name="code" value="REGULAR" />
+			<column name="freeDays" value="3" />
+			<column name="bonusPoints" value="1" />
+		</insert>
+		<insert tableName="film_types">
+			<column name="id" value="3" />
+			<column name="price_id" value="1" />
+			<column name="code" value="OLD" />
+			<column name="freeDays" value="5" />
+			<column name="bonusPoints" value="1" />
+		</insert>
+	</changeSet>
+
+	<changeSet id="3" author="fwachs">
+		<createTable tableName="films">
+			<column name="id" type="bigint" autoIncrement="true">
+				<constraints primaryKey="true" nullable="false" />
+			</column>
+			<column name="type_id" type="bigint">
+				<constraints nullable="false" />
+			</column>
+			<column name="name" type="varchar(255)" />
+			<column name="stock" type="int(10)" />
+		</createTable>
+		<insert tableName="films">
+			<column name="id" value="1" />
+			<column name="type_id" value="1" />
+			<column name="name" value="Matrix 11" />
+			<column name="stock" value="20" />
+		</insert>
+		<insert tableName="films">
+			<column name="id" value="2" />
+			<column name="type_id" value="2" />
+			<column name="name" value="Spider Man" />
+			<column name="stock" value="20" />
+		</insert>
+		<insert tableName="films">
+			<column name="id" value="3" />
+			<column name="type_id" value="2" />
+			<column name="name" value="Spider Man 2" />
+			<column name="stock" value="20" />
+		</insert>
+		<insert tableName="films">
+			<column name="id" value="4" />
+			<column name="type_id" value="3" />
+			<column name="name" value="Out Of Africa" />
+			<column name="stock" value="20" />
+		</insert>
+	</changeSet>
+
+
+	<changeSet id="4" author="fwachs">
+		<createTable tableName="customers">
+			<column name="id" type="bigint" autoIncrement="true">
+				<constraints primaryKey="true" nullable="false" />
+			</column>
+			<column name="name" type="varchar(255)" />
+		</createTable>
+		<insert tableName="customers">
+			<column name="id" value="1" />
+			<column name="name" value="Federico Wachs" />
+		</insert>
+		<insert tableName="customers">
+			<column name="id" value="2" />
+			<column name="name" value="Oaula Wachs" />
+		</insert>
+		<insert tableName="customers">
+			<column name="id" value="3" />
+			<column name="name" value="Santiago Wachs" />
+		</insert>
+	</changeSet>
+
+	<changeSet id="5" author="fwachs">
+		<createTable tableName="rentals">
+			<column name="id" type="bigint" autoIncrement="true">
+				<constraints primaryKey="true" nullable="false" />
+			</column>
+			<column name="customer_id" type="bigint">
+				<constraints nullable="false" />
+			</column>
+		</createTable>
+		<createTable tableName="rented_films">
+			<column name="id" type="bigint" autoIncrement="true">
+				<constraints primaryKey="true" nullable="false" />
+			</column>
+			<column name="rental_id" type="bigint">
+				<constraints nullable="false" />
+			</column>
+			<column name="film_id" type="bigint">
+				<constraints nullable="false" />
+			</column>
+			<column name="createdOn" type="date">
+				<constraints primaryKey="false" nullable="false" />
+			</column>
+			<column name="returnedOn" type="date" />
+			<column name="days" type="int(10)"/>
+		</createTable>
+
+	</changeSet>
+
+	<changeSet id="6" author="fwachs">
+		<insert tableName="rentals">
+			<column name="id" value="1" />
+			<column name="customer_id" value="1" />
+		</insert>
+		
+		<insert tableName="rented_films">
+			<column name="id" value="1" />
+			<column name="rental_id" value="1" />
+			<column name="film_id" value="1" />
+			<column name="createdOn" value="2017-10-08" />
+			<column name="days" value="4" />
+		</insert>
+	</changeSet>
+
+</databaseChangeLog>
