@@ -24,7 +24,7 @@ public class RentalServiceImpl implements RentalService {
         this.customerDAO = customerDAO;
     }
 
-    public Rental rent(Customer customer, List<RentedFilm> filmsToRent) {
+    public Rental rent(Customer customer, List<RentedFilm> filmsToRent) throws OutOfStockException {
         Rental rental = new Rental(customer);
         List<RentedFilm> films = new ArrayList<RentedFilm>();
 
@@ -46,6 +46,10 @@ public class RentalServiceImpl implements RentalService {
                 // but decided against it. I like my models rich in behavior so decreaseStock should always throw
                 // an exception if needed
             }
+        }
+
+        if (films.isEmpty()) {
+            throw new OutOfStockException();
         }
 
         rental.setRentedFilms(films);

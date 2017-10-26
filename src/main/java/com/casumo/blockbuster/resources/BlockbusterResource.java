@@ -21,6 +21,7 @@ import com.casumo.blockbuster.core.Customer;
 import com.casumo.blockbuster.core.Film;
 import com.casumo.blockbuster.core.Rental;
 import com.casumo.blockbuster.core.RentedFilm;
+import com.casumo.blockbuster.exception.OutOfStockException;
 
 import io.dropwizard.hibernate.UnitOfWork;
 
@@ -62,8 +63,14 @@ public class BlockbusterResource {
             return Response.status(Status.NO_CONTENT).build();
         }
 
-        Rental rental = rentalService.rent(customer, filmsToRent);
-        return Response.ok(rental).build();
+        Rental rental;
+        try {
+            rental = rentalService.rent(customer, filmsToRent);
+            return Response.ok(rental).build();
+        } catch (OutOfStockException e) {
+            // there was no stock for any of the movies that wanted to be rented
+            return Response.status(Status.NO_CONTENT).build();
+        }
     }
 
     @POST
