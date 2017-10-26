@@ -1,6 +1,7 @@
 package com.casumo.api;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.Assert.*;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.reset;
 import static org.mockito.Mockito.verify;
@@ -106,11 +107,17 @@ public class BlockbusterServiceTest {
     }
 
     @Test
-    public void testRent() throws OutOfStockException {
+    public void testRentOk() {
         when(customerDAO.findBy(1L)).thenReturn(Optional.ofNullable(customer));
 
         Customer customer = rentalService.findCustomerBy(1L);
-        Rental rental = rentalService.rent(customer, rentedFilms);
+        Rental rental = null;
+        try {
+            rental = rentalService.rent(customer, rentedFilms);
+        } catch (OutOfStockException e) {
+            // should not happen
+            fail();
+        }
 
         assertThat(rental.calculateInitialPrice()).isEqualTo(250);
         verify(customerDAO).findBy(1L);
@@ -126,12 +133,16 @@ public class BlockbusterServiceTest {
 
         try {
             rental = rentalService.returnFilms(customer, rental, Arrays.asList(new Long[] { 1L, 2L, 3L, 4L }));
+
+            // setting returned on 4 days ahead
             for (RentedFilm rentedFilm : rental.getRentedFilms()) {
                 rentedFilm.setReturnedOn(DateUtils.addDays(new Date(), 4));
             }
         } catch (AlreadyReturnedException e) {
             // should not happen
+            fail();
         }
+
         assertThat(rental.calculateAfterReturnPrice()).isEqualTo(180);
         verify(customerDAO).findBy(1L);
         verify(rentalDAO).findBy(1L);
