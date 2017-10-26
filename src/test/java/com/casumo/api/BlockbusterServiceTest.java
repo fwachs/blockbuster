@@ -1,4 +1,4 @@
-package com.casumo.resources;
+package com.casumo.api;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.mock;
@@ -7,8 +7,12 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 
+import org.apache.commons.lang3.time.DateUtils;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -24,8 +28,10 @@ import com.casumo.blockbuster.core.RentedFilm;
 import com.casumo.blockbuster.db.CustomerDAO;
 import com.casumo.blockbuster.db.FilmDAO;
 import com.casumo.blockbuster.db.RentalDAO;
+import com.casumo.blockbuster.exception.AlreadyReturnedException;
+import com.casumo.blockbuster.exception.OutOfStockException;
 
-public class BlockbusterResourceTest {
+public class BlockbusterServiceTest {
     private RentalService rentalService;
     private static final FilmDAO filmDAO = mock(FilmDAO.class);
     private static final RentalDAO rentalDAO = mock(RentalDAO.class);
@@ -100,34 +106,34 @@ public class BlockbusterResourceTest {
     }
 
     @Test
-    public void testFindCustomer() {
-//        when(customerDAO.findById(1L)).thenReturn();
+    public void testRent() throws OutOfStockException {
+        when(customerDAO.findBy(1L)).thenReturn(Optional.ofNullable(customer));
+
+        Customer customer = rentalService.findCustomerBy(1L);
+        Rental rental = rentalService.rent(customer, rentedFilms);
+
+        assertThat(rental.calculateInitialPrice()).isEqualTo(250);
+        verify(customerDAO).findBy(1L);
     }
-//    @Test
-//    public void testRent() {
-//        when(rentalService.findCustomerBy(1L)).thenReturn(customer);
-//        when(rentalService.rent(customer, rentedFilms)).thenReturn(rental);
-//
-//        Customer customer = rentalService.findCustomerBy(1L);
-//        Rental rental = rentalService.rent(customer, rentedFilms);
-//
-//        assertThat(rental.calculateInitialPrice()).isEqualTo(250);
-//        assertThat(rental.calculateInitialPrice()).isEqualTo(this.rental.calculateInitialPrice());
-//        verify(rentalService).findCustomerBy(1L);
-//        verify(rentalService).rent(customer, rentedFilms);
-//    }
-//
-//    @Test
-//    public void testReturn() {
-//        when(rentalService.findCustomerBy(1L)).thenReturn(customer);
-//        when(rentalService.rent(customer, rentedFilms)).thenReturn(rental);
-//
-//        Customer customer = rentalService.findCustomerBy(1L);
-//        Rental rental = rentalService.rent(customer, rentedFilms);
-//
-//        assertThat(rental.calculateInitialPrice()).isEqualTo(250);
-//        assertThat(rental.calculateInitialPrice()).isEqualTo(this.rental.calculateInitialPrice());
-//        verify(rentalService).findCustomerBy(1L);
-//        verify(rentalService).rent(customer, rentedFilms);
-//    }
+
+    @Test
+    public void testReturnOk() {
+        when(customerDAO.findBy(1L)).thenReturn(Optional.ofNullable(customer));
+        when(rentalDAO.findBy(1L)).thenReturn(Optional.ofNullable(rental));
+
+        Customer customer = rentalService.findCustomerBy(1L);
+        Rental rental = rentalService.findRentalBy(1L);
+
+        try {
+            rental = rentalService.returnFilms(customer, rental, Arrays.asList(new Long[] { 1L, 2L, 3L, 4L }));
+            for (RentedFilm rentedFilm : rental.getRentedFilms()) {
+                rentedFilm.setReturnedOn(DateUtils.addDays(new Date(), 4));
+            }
+        } catch (AlreadyReturnedException e) {
+            // should not happen
+        }
+        assertThat(rental.calculateAfterReturnPrice()).isEqualTo(180);
+        verify(customerDAO).findBy(1L);
+        verify(rentalDAO).findBy(1L);
+    }
 }

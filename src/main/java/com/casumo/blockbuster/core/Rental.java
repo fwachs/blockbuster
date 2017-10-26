@@ -105,9 +105,9 @@ public class Rental {
     }
 
     public void markAsReturned(List<Long> films) throws AlreadyReturnedException {
-        for (RentedFilm film : this.getRentedFilms()) {
-            if (films.contains(film.getId())) {
-                film.markAsReturned();
+        for (RentedFilm rentedFilm : this.getRentedFilms()) {
+            if (films.contains(rentedFilm.getFilm().getId())) {
+                rentedFilm.markAsReturned();
             }
         }
     }

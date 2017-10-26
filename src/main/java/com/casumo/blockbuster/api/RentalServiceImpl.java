@@ -80,7 +80,7 @@ public class RentalServiceImpl implements RentalService {
 
     @Override
     public Customer findCustomerBy(long customerId) {
-        return customerDAO.findById(customerId).orElse(null);
+        return customerDAO.findBy(customerId).orElse(null);
     }
 
     @Override
@@ -92,6 +92,6 @@ public class RentalServiceImpl implements RentalService {
 
     @Override
     public Rental findRentalBy(long rentalId) {
-        return rentalDAO.findBy(rentalId);
+        return rentalDAO.findBy(rentalId).orElse(null);
     }
 }

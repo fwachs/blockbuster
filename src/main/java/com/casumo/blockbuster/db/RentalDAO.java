@@ -1,6 +1,7 @@
 package com.casumo.blockbuster.db;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.hibernate.Criteria;
 import org.hibernate.SessionFactory;
@@ -29,14 +30,14 @@ public class RentalDAO extends AbstractDAO<Rental> {
         }
     }
 
-    @SuppressWarnings("unchecked")
+    @SuppressWarnings({ "deprecation", "unchecked" })
     public List<Rental> findRentalsFor(Customer customer) {
         Criteria criteria = this.currentSession().createCriteria(Rental.class);
         return criteria.add(Restrictions.eq("customer", customer)).list();
 
     }
 
-    public Rental findBy(long rentalId) {
-        return get(rentalId);
+    public Optional<Rental> findBy(long rentalId) {
+        return Optional.ofNullable(get(rentalId));
     }
 }

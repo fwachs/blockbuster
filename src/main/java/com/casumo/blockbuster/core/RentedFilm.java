@@ -12,8 +12,6 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
-import org.apache.commons.lang3.time.DateUtils;
-
 import com.casumo.blockbuster.exception.AlreadyReturnedException;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -105,7 +103,7 @@ public class RentedFilm {
             throw new AlreadyReturnedException("Already returned movie id: " + this.getId());
         }
         this.getFilm().increaseStock();
-        setReturnedOn(DateUtils.addDays(new Date(), 4));
+        setReturnedOn(new Date());
     }
 
     public long calculateExtraDays() {

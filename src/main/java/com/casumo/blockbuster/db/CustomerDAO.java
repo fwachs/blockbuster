@@ -14,7 +14,7 @@ public class CustomerDAO extends AbstractDAO<Customer> {
         super(factory);
     }
 
-    public Optional<Customer> findById(Long id) {
+    public Optional<Customer> findBy(Long id) {
         return Optional.ofNullable(get(id));
     }
 
