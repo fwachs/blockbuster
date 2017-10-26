@@ -78,11 +78,12 @@ public class BlockbusterResource {
     public Response returnFilms(@PathParam("id") long id, @PathParam("rentalId") long rentalId, List<Long> filmIds)
             throws Exception {
         Customer customer = rentalService.findCustomerBy(id);
-        if (customer == null) {
+        Rental rental = rentalService.findRentalBy(rentalId);
+ 
+        if (customer == null || rental == null) {
             return Response.status(Status.NOT_FOUND).build();
         }
 
-        Rental rental = rentalService.findRentalBy(rentalId);
         rental = rentalService.returnFilms(customer, rental, filmIds);
         return Response.ok(rental).build();
     }

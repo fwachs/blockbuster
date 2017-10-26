@@ -39,11 +39,16 @@ public class RentalServiceImpl implements RentalService {
                 films.add(filmToRent);
             } catch (OutOfStockException e) {
                 // probably should log this error and
-                // do nothing. when I used to go to the blockbuster to rent a couple of movies
-                // I usually asked for a bunch of movies and the ones that were out of stock
-                // just didn't get to my hands in the end, so no need to stop processing all other movies
-                // I could also implement this without an exception and using @Film.canBeRented method
-                // but decided against it. I like my models rich in behavior so decreaseStock should always throw
+                // do nothing. when I used to go to the blockbuster to rent a
+                // couple of movies
+                // I usually asked for a bunch of movies and the ones that were
+                // out of stock
+                // just didn't get to my hands in the end, so no need to stop
+                // processing all other movies
+                // I could also implement this without an exception and using
+                // @Film.canBeRented method
+                // but decided against it. I like my models rich in behavior so
+                // decreaseStock should always throw
                 // an exception if needed
             }
         }
@@ -79,11 +84,7 @@ public class RentalServiceImpl implements RentalService {
 
     @Override
     public Rental returnFilms(Customer customer, Rental rental, List<Long> films) {
-        for (RentedFilm film : rental.getRentedFilms()) {
-            if (films.contains(film.getId())) {
-                film.markAsReturned();
-            }
-        }
+        rental.markAsReturned(films);
         rentalDAO.save(rental);
         return rental;
     }

@@ -102,4 +102,12 @@ public class Rental {
         this.customer = customer;
     }
 
+    public void markAsReturned(List<Long> films) {
+        for (RentedFilm film : this.getRentedFilms()) {
+            if (films.contains(film.getId())) {
+                film.markAsReturned();
+            }
+        }
+    }
+
 }
