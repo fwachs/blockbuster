@@ -23,12 +23,13 @@ public class RentalDAO extends AbstractDAO<Rental> {
         // I understood that Hibernate should take care of the children
         // if classes were configured correctly, seems I have an error
         // but it's been a while since I last used hibernate.
-        // I prefer plain JDBC really.
-        for (RentedFilm film : rental.getRentedFilms()) {
-            this.currentSession().save(film);
+        for (RentedFilm rentedFilm : rental.getRentedFilms()) {
+            this.currentSession().save(rentedFilm);
+            this.currentSession().save(rentedFilm.getFilm());
         }
     }
 
+    @SuppressWarnings("unchecked")
     public List<Rental> findRentalsFor(Customer customer) {
         Criteria criteria = this.currentSession().createCriteria(Rental.class);
         return criteria.add(Restrictions.eq("customer", customer)).list();

@@ -79,24 +79,28 @@
 			<column name="type_id" value="1" />
 			<column name="name" value="Matrix 11" />
 			<column name="stock" value="20" />
+			<column name="version" value="1" />
 		</insert>
 		<insert tableName="films">
 			<column name="id" value="2" />
 			<column name="type_id" value="2" />
 			<column name="name" value="Spider Man" />
 			<column name="stock" value="20" />
+			<column name="version" value="1" />
 		</insert>
 		<insert tableName="films">
 			<column name="id" value="3" />
 			<column name="type_id" value="2" />
 			<column name="name" value="Spider Man 2" />
 			<column name="stock" value="20" />
+			<column name="version" value="1" />
 		</insert>
 		<insert tableName="films">
 			<column name="id" value="4" />
 			<column name="type_id" value="3" />
 			<column name="name" value="Out Of Africa" />
 			<column name="stock" value="20" />
+			<column name="version" value="1" />
 		</insert>
 	</changeSet>
 

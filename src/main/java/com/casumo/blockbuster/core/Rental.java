@@ -14,6 +14,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
+import com.casumo.blockbuster.exception.AlreadyReturnedException;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 @Entity
@@ -103,7 +104,7 @@ public class Rental {
         this.customer = customer;
     }
 
-    public void markAsReturned(List<Long> films) {
+    public void markAsReturned(List<Long> films) throws AlreadyReturnedException {
         for (RentedFilm film : this.getRentedFilms()) {
             if (films.contains(film.getId())) {
                 film.markAsReturned();

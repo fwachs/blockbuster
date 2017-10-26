@@ -10,6 +10,7 @@ import com.casumo.blockbuster.core.RentedFilm;
 import com.casumo.blockbuster.db.CustomerDAO;
 import com.casumo.blockbuster.db.FilmDAO;
 import com.casumo.blockbuster.db.RentalDAO;
+import com.casumo.blockbuster.exception.AlreadyReturnedException;
 import com.casumo.blockbuster.exception.OutOfStockException;
 
 public class RentalServiceImpl implements RentalService {
@@ -83,7 +84,7 @@ public class RentalServiceImpl implements RentalService {
     }
 
     @Override
-    public Rental returnFilms(Customer customer, Rental rental, List<Long> films) {
+    public Rental returnFilms(Customer customer, Rental rental, List<Long> films) throws AlreadyReturnedException {
         rental.markAsReturned(films);
         rentalDAO.save(rental);
         return rental;

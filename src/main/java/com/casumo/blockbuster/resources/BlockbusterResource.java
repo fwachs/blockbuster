@@ -23,7 +23,9 @@ import com.casumo.blockbuster.core.Customer;
 import com.casumo.blockbuster.core.Film;
 import com.casumo.blockbuster.core.Rental;
 import com.casumo.blockbuster.core.RentedFilm;
+import com.casumo.blockbuster.exception.AlreadyReturnedException;
 import com.casumo.blockbuster.exception.OutOfStockException;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 import io.dropwizard.hibernate.UnitOfWork;
 
@@ -53,6 +55,7 @@ public class BlockbusterResource {
             return Response.status(Status.NOT_FOUND).build();
         }
 
+        // TODO: implement query with in (ids) to avoid querying for each movie
         List<RentedFilm> filmsToRent = new ArrayList<RentedFilm>();
         for (FilmVO filmVo : vo.films) {
             Film film = rentalService.findFilmFor(filmVo.filmId);
@@ -62,16 +65,20 @@ public class BlockbusterResource {
             }
         }
         if (filmsToRent.isEmpty()) {
-            return Response.status(Status.NO_CONTENT).build();
+            return Response.status(Status.NO_CONTENT).entity(new Message("response", "No movies found for given ids"))
+                    .build();
         }
 
+        Response response;
         try {
             Rental rental = rentalService.rent(customer, filmsToRent);
-            return Response.ok(rental).build();
+            response = Response.ok(rental).build();
         } catch (OutOfStockException e) {
             // there was no stock for any of the movies that wanted to be rented
-            return Response.status(Status.NO_CONTENT).build();
+            response = Response.status(Status.NO_CONTENT)
+                    .entity(new Message("response", "No stock available for any movie")).build();
         }
+        return response;
     }
 
     @POST
@@ -81,12 +88,21 @@ public class BlockbusterResource {
         Customer customer = rentalService.findCustomerBy(id);
         Rental rental = rentalService.findRentalBy(rentalId);
 
-        if (customer == null || rental == null) {
-            return Response.status(Status.NOT_FOUND).build();
+        if (customer == null) {
+            return Response.status(Status.NOT_FOUND).entity(error("No user found for id: " + id)).build();
+        }
+        if (rental == null) {
+            return Response.status(Status.NOT_FOUND).entity(error("No rental found for id: " + rentalId)).build();
         }
 
-        rental = rentalService.returnFilms(customer, rental, filmIds);
-        return Response.ok(rental).build();
+        Response response;
+        try {
+            rental = rentalService.returnFilms(customer, rental, filmIds);
+            response = Response.ok(rental).build();
+        } catch (AlreadyReturnedException e) {
+            response = Response.status(Status.BAD_REQUEST).entity(error(e.getMessage())).build();
+        }
+        return response;
     }
 
     @GET
@@ -95,12 +111,24 @@ public class BlockbusterResource {
     public Response bonusPointsFor(@PathParam("id") long id) {
         Customer customer = rentalService.findCustomerBy(id);
         if (customer == null) {
-            return Response.status(Status.NOT_FOUND).build();
+            return Response.status(Status.NOT_FOUND).entity(error("No user found for id: " + id)).build();
         }
 
-        Map<String, Integer> response = new HashMap<String, Integer>();
         Integer points = rentalService.calculateBonusPointsFor(customer);
-        response.put("points", points);
-        return Response.ok(response).build();
+        return Response.ok(new Message("points", points)).build();
+    }
+
+    private Message error(String msg) {
+        return new Message("error", msg);
+    }
+
+    class Message {
+        @JsonProperty
+        private Map<String, Object> response;
+
+        public Message(String key, Object obj) {
+            this.response = new HashMap<String, Object>();
+            this.response.put(key, obj);
+        }
     }
 }

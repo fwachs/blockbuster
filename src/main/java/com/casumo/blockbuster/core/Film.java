@@ -93,7 +93,12 @@ public class Film {
         this.version = version;
     }
 
+    @JsonProperty
     public Integer getVersion() {
         return version;
+    }
+
+    public void increaseStock() {
+        this.stock++;
     }
 }
