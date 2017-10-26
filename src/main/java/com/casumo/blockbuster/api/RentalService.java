@@ -9,9 +9,9 @@ import com.casumo.blockbuster.core.RentedFilm;
 
 public interface RentalService {
 
-    Rental rent(Customer customer, List<RentedFilm> films);
-
     List<Film> findAllFilms();
+
+    Rental rent(Customer customer, List<RentedFilm> films);
 
     Film findFilmFor(long filmId);
 
@@ -22,6 +22,5 @@ public interface RentalService {
     Rental returnFilms(Customer customer, Rental rental, List<Long> filmIds);
 
     Rental findRentalBy(long rentalId);
-
 
 }

@@ -10,6 +10,7 @@ import com.casumo.blockbuster.core.RentedFilm;
 import com.casumo.blockbuster.db.CustomerDAO;
 import com.casumo.blockbuster.db.FilmDAO;
 import com.casumo.blockbuster.db.RentalDAO;
+import com.casumo.blockbuster.exception.OutOfStockException;
 
 public class RentalServiceImpl implements RentalService {
 
@@ -30,10 +31,20 @@ public class RentalServiceImpl implements RentalService {
         for (RentedFilm filmToRent : filmsToRent) {
             filmToRent.setRental(rental);
             Film film = filmToRent.getFilm();
-            if (film.canBeRented()) {
-                films.add(filmToRent);
-                // should check for optimistic or pssimistic lock. didn't have enough time to figure this out
+            // should check for optimistic or pesimistic lock. didn't have
+            // enough time to figure this out entirely
+            // with hibernate, I did implement @Version though
+            try {
                 film.decreaseStock();
+                films.add(filmToRent);
+            } catch (OutOfStockException e) {
+                // probably should log this error and
+                // do nothing. when I used to go to the blockbuster to rent a couple of movies
+                // I usually asked for a bunch of movies and the ones that were out of stock
+                // just didn't get to my hands in the end, so no need to stop processing all other movies
+                // I could also implement this without an exception and using @Film.canBeRented method
+                // but decided against it. I like my models rich in behavior so decreaseStock should always throw
+                // an exception if needed
             }
         }
 

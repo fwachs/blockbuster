@@ -10,7 +10,9 @@ import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.Table;
+import javax.persistence.Version;
 
+import com.casumo.blockbuster.exception.OutOfStockException;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 @Entity
@@ -28,7 +30,11 @@ public class Film {
     private String name;
     private int stock;
 
+    @Version
+    private Integer version;
+
     public Film() {
+        // here for hibernate
     }
 
     public Film(long id, FilmType type, String name, int stock) {
@@ -73,7 +79,9 @@ public class Film {
         this.name = name;
     }
 
-    public void decreaseStock() {
+    public void decreaseStock() throws OutOfStockException {
+        if (stock == 0)
+            throw new OutOfStockException();
         this.stock--;
     }
 
@@ -81,4 +89,11 @@ public class Film {
         return this.stock > 0;
     }
 
+    public void setVersion(Integer version) {
+        this.version = version;
+    }
+
+    public Integer getVersion() {
+        return version;
+    }
 }

@@ -72,6 +72,7 @@
 			</column>
 			<column name="name" type="varchar(255)" />
 			<column name="stock" type="int(10)" />
+			<column name="version" type="int(10)" />
 		</createTable>
 		<insert tableName="films">
 			<column name="id" value="1" />
