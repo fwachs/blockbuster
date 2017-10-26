@@ -75,11 +75,10 @@ public class BlockbusterResource {
     @POST
     @UnitOfWork
     @Path("/user/{id}/rental/{rentalId}")
-    public Response returnFilms(@PathParam("id") long id, @PathParam("rentalId") long rentalId, List<Long> filmIds)
-            throws Exception {
+    public Response returnFilms(@PathParam("id") long id, @PathParam("rentalId") long rentalId, List<Long> filmIds) {
         Customer customer = rentalService.findCustomerBy(id);
         Rental rental = rentalService.findRentalBy(rentalId);
- 
+
         if (customer == null || rental == null) {
             return Response.status(Status.NOT_FOUND).build();
         }
@@ -91,7 +90,7 @@ public class BlockbusterResource {
     @GET
     @UnitOfWork
     @Path("/user/{id}/points")
-    public Response bonusPointsFor(@PathParam("id") long id) throws Exception {
+    public Response bonusPointsFor(@PathParam("id") long id) {
         Customer customer = rentalService.findCustomerBy(id);
         if (customer == null) {
             return Response.status(Status.NOT_FOUND).build();
