@@ -1,5 +1,7 @@
 package com.casumo.blockbuster.core;
 
+import java.util.List;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -64,5 +66,15 @@ public class Customer {
         }
         Customer rhs = (Customer) obj;
         return new EqualsBuilder().appendSuper(super.equals(obj)).append(id, rhs.id).isEquals();
+    }
+
+    public int calculateBonusPoints(List<Rental> rentals) {
+        int bonusPoints = 0;
+        for (Rental rental : rentals) {
+            for (RentedFilm rentedFilm : rental.getRentedFilms()) {
+                bonusPoints += rentedFilm.getFilm().getType().getBonusPoints();
+            }
+        }
+        return bonusPoints;
     }
 }

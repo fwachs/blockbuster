@@ -63,9 +63,8 @@ public class BlockbusterResource {
             return Response.status(Status.NO_CONTENT).build();
         }
 
-        Rental rental;
         try {
-            rental = rentalService.rent(customer, filmsToRent);
+            Rental rental = rentalService.rent(customer, filmsToRent);
             return Response.ok(rental).build();
         } catch (OutOfStockException e) {
             // there was no stock for any of the movies that wanted to be rented

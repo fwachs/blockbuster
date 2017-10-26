@@ -58,14 +58,8 @@ public class RentalServiceImpl implements RentalService {
     }
 
     public int calculateBonusPointsFor(Customer customer) {
-        int bonusPoints = 0;
         List<Rental> rentals = rentalDAO.findRentalsFor(customer);
-        for (Rental rental : rentals) {
-            for (RentedFilm rentedFilm : rental.getRentedFilms()) {
-                bonusPoints += rentedFilm.getFilm().getType().getBonusPoints();
-            }
-        }
-        return bonusPoints;
+        return customer.calculateBonusPoints(rentals);
     }
 
     @Override
