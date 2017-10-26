@@ -71,6 +71,7 @@ public class Rental {
         for (RentedFilm rentedFilm : rentedFilms) {
             long extraDays = rentedFilm.calculateExtraDays();
             if (extraDays > 0) {
+                // uhm I don't like this. TODO: think how to fix
                 totalPrice += rentedFilm.getFilm().getType().getPrice().getAmount() * extraDays;
             }
         }

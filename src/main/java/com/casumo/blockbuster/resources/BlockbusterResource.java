@@ -1,7 +1,9 @@
 package com.casumo.blockbuster.resources;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 import javax.ws.rs.GET;
@@ -95,6 +97,10 @@ public class BlockbusterResource {
         if (customer == null) {
             return Response.status(Status.NOT_FOUND).build();
         }
-        return Response.ok(rentalService.calculateBonusPointsFor(customer)).build();
+
+        Map<String, Integer> response = new HashMap<String, Integer>();
+        Integer points = rentalService.calculateBonusPointsFor(customer);
+        response.put("points", points);
+        return Response.ok(response).build();
     }
 }

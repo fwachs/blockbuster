@@ -107,6 +107,7 @@ public class RentedFilm {
         if (this.returnedOn == null) {
             return 0;
         }
+
         long diffTime = this.returnedOn.getTime() - this.createdOn.getTime();
         long diffDays = diffTime / (1000 * 60 * 60 * 24);
 
