@@ -1,0 +1,6 @@
+/target/
+/dependency-reduced-pom.xml
+/src/main/resources/migrations.out.xml
+.project
+.classpath
+/.settings/*
