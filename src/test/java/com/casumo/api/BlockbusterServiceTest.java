@@ -71,11 +71,11 @@ public class BlockbusterServiceTest {
     private void setupFilms() {
         films = new ArrayList<Film>();
         Price basic = new Price(1L, 30, "BASIC");
-        Price premium = new Price(1L, 40, "PREMIUM");
+        Price premium = new Price(2L, 40, "PREMIUM");
 
         FilmType newRelease = new FilmType(1L, premium, "NEW", 2, 0);
-        FilmType regular = new FilmType(2L, basic, "NEW", 1, 3);
-        FilmType old = new FilmType(3L, basic, "NEW", 1, 5);
+        FilmType regular = new FilmType(2L, basic, "REGULAR", 1, 3);
+        FilmType old = new FilmType(3L, basic, "OLD", 1, 5);
 
         matrix = new Film(1L, newRelease, "Matrix 11", 10);
         spiderMan = new Film(2L, regular, "Spider Man", 10);
@@ -146,5 +146,15 @@ public class BlockbusterServiceTest {
         assertThat(rental.calculateAfterReturnPrice()).isEqualTo(180);
         verify(customerDAO).findBy(1L);
         verify(rentalDAO).findBy(1L);
+    }
+
+    @Test
+    public void testCalculatePoints() {
+        when(rentalDAO.findRentalsFor(customer)).thenReturn(Arrays.asList(new Rental[] { rental }));
+
+        int bonusPoints = rentalService.calculateBonusPointsFor(customer);
+
+        assertThat(bonusPoints).isEqualTo(5);
+        verify(rentalDAO).findRentalsFor(customer);
     }
 }
