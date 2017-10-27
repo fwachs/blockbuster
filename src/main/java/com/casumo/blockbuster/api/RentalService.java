@@ -18,7 +18,7 @@ public interface RentalService {
 
     Rental returnFilms(Customer customer, Rental rental, List<Long> filmIds, Date returnedOn) throws AlreadyReturnedException;
 
-    Film findFilmFor(long filmId);
+    Film findFilmBy(long filmId);
 
     int calculateBonusPointsFor(Customer customer);
 

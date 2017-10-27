@@ -75,7 +75,7 @@ public class RentalServiceImpl implements RentalService {
     }
 
     @Override
-    public Film findFilmFor(long filmId) {
+    public Film findFilmBy(long filmId) {
         return filmDAO.findById(filmId).orElse(null);
     }
 

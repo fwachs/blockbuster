@@ -59,7 +59,7 @@ public class BlockbusterResource {
         // TODO: implement query with in (ids) to avoid querying for each movie
         List<RentedFilm> filmsToRent = new ArrayList<RentedFilm>();
         for (FilmVO filmVo : vo.films) {
-            Film film = rentalService.findFilmFor(filmVo.filmId);
+            Film film = rentalService.findFilmBy(filmVo.filmId);
             if (film != null) {
                 RentedFilm rentedFilm = new RentedFilm(film, filmVo.days);
                 filmsToRent.add(rentedFilm);
