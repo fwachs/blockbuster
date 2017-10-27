@@ -1,5 +1,6 @@
 package com.casumo.blockbuster.api;
 
+import java.util.Date;
 import java.util.List;
 
 import com.casumo.blockbuster.core.Customer;
@@ -15,7 +16,7 @@ public interface RentalService {
 
     Rental rent(Customer customer, List<RentedFilm> films) throws OutOfStockException;
 
-    Rental returnFilms(Customer customer, Rental rental, List<Long> filmIds) throws AlreadyReturnedException;
+    Rental returnFilms(Customer customer, Rental rental, List<Long> filmIds, Date returnedOn) throws AlreadyReturnedException;
 
     Film findFilmFor(long filmId);
 

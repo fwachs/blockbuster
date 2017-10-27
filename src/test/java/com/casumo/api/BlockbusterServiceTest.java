@@ -132,12 +132,8 @@ public class BlockbusterServiceTest {
         Rental rental = rentalService.findRentalBy(1L);
 
         try {
-            rental = rentalService.returnFilms(customer, rental, Arrays.asList(new Long[] { 1L, 2L, 3L, 4L }));
-
-            // setting returned on 4 days ahead
-            for (RentedFilm rentedFilm : rental.getRentedFilms()) {
-                rentedFilm.setReturnedOn(DateUtils.addDays(new Date(), 4));
-            }
+            rental = rentalService.returnFilms(customer, rental, Arrays.asList(new Long[] { 1L, 2L, 3L, 4L }),
+                    DateUtils.addDays(new Date(), 4));
         } catch (AlreadyReturnedException e) {
             // should not happen
             fail();

@@ -1,6 +1,7 @@
 package com.casumo.blockbuster.api;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import com.casumo.blockbuster.core.Customer;
@@ -84,8 +85,8 @@ public class RentalServiceImpl implements RentalService {
     }
 
     @Override
-    public Rental returnFilms(Customer customer, Rental rental, List<Long> films) throws AlreadyReturnedException {
-        rental.markAsReturned(films);
+    public Rental returnFilms(Customer customer, Rental rental, List<Long> films, Date returnedOn) throws AlreadyReturnedException {
+        rental.markAsReturned(films, returnedOn);
         rentalDAO.save(rental);
         return rental;
     }

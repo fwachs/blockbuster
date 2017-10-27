@@ -1,6 +1,7 @@
 package com.casumo.blockbuster.resources;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -97,7 +98,7 @@ public class BlockbusterResource {
 
         Response response;
         try {
-            rental = rentalService.returnFilms(customer, rental, filmIds);
+            rental = rentalService.returnFilms(customer, rental, filmIds, new Date());
             response = Response.ok(rental).build();
         } catch (AlreadyReturnedException e) {
             response = Response.status(Status.BAD_REQUEST).entity(error(e.getMessage())).build();

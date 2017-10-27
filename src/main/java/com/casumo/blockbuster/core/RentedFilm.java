@@ -98,12 +98,12 @@ public class RentedFilm {
         this.returnedOn = returnedOn;
     }
 
-    public void markAsReturned() throws AlreadyReturnedException {
+    public void markAsReturned(Date returnedOn) throws AlreadyReturnedException {
         if (this.returnedOn != null) {
             throw new AlreadyReturnedException("Already returned movie id: " + this.getId());
         }
         this.getFilm().increaseStock();
-        setReturnedOn(new Date());
+        setReturnedOn(returnedOn);
     }
 
     public long calculateExtraDays() {

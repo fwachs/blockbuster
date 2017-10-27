@@ -1,6 +1,7 @@
 package com.casumo.blockbuster.core;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import javax.persistence.CascadeType;
@@ -104,10 +105,10 @@ public class Rental {
         this.customer = customer;
     }
 
-    public void markAsReturned(List<Long> films) throws AlreadyReturnedException {
+    public void markAsReturned(List<Long> films, Date returnedOn) throws AlreadyReturnedException {
         for (RentedFilm rentedFilm : this.getRentedFilms()) {
             if (films.contains(rentedFilm.getFilm().getId())) {
-                rentedFilm.markAsReturned();
+                rentedFilm.markAsReturned(returnedOn);
             }
         }
     }
