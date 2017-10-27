@@ -144,6 +144,31 @@ public class BlockbusterServiceTest {
         verify(rentalDAO).findBy(1L);
     }
 
+    @Test(expected = AlreadyReturnedException.class)
+    public void testReturnNotOk() throws AlreadyReturnedException {
+        when(customerDAO.findBy(1L)).thenReturn(Optional.ofNullable(customer));
+        when(rentalDAO.findBy(1L)).thenReturn(Optional.ofNullable(rental));
+
+        Customer customer = rentalService.findCustomerBy(1L);
+        Rental rental = rentalService.findRentalBy(1L);
+
+        try {
+            rental = rentalService.returnFilms(customer, rental, Arrays.asList(new Long[] { 1L, 2L, 3L, 4L }),
+                    DateUtils.addDays(new Date(), 4));
+        } catch (AlreadyReturnedException e) {
+            // should not happen
+            fail();
+        }
+        
+        assertThat(rental.calculateAfterReturnPrice()).isEqualTo(180);
+        verify(customerDAO).findBy(1L);
+        verify(rentalDAO).findBy(1L);
+
+        rental = rentalService.returnFilms(customer, rental, Arrays.asList(new Long[] { 1L, 2L, 3L, 4L }),
+                DateUtils.addDays(new Date(), 4));
+        fail();
+    }
+
     @Test
     public void testCalculatePoints() {
         when(rentalDAO.findRentalsFor(customer)).thenReturn(Arrays.asList(new Rental[] { rental }));
