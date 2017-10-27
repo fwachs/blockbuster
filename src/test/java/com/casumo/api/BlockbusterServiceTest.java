@@ -42,6 +42,7 @@ public class BlockbusterServiceTest {
     private Customer customer;
     private Film matrix;
     private List<RentedFilm> rentedFilms;
+    private List<RentedFilm> outOfStockRentedFilms;
     private Rental rental;
     private Film spiderMan;
     private Film spiderMan2;
@@ -53,7 +54,16 @@ public class BlockbusterServiceTest {
         customer = new Customer(1L, "Federico Wachs");
         setupFilms();
         setupRentedFilms();
+        setupOutOfStockRentedFilms();
         setupRental();
+    }
+
+    private void setupOutOfStockRentedFilms() {
+        outOfStockRentedFilms = new ArrayList<RentedFilm>();
+        matrix.setStock(1);
+        outOfStockRentedFilms.add(new RentedFilm(matrix, 1));
+        spiderMan.setStock(1);
+        outOfStockRentedFilms.add(new RentedFilm(spiderMan, 5));
     }
 
     private void setupRentedFilms() {
@@ -123,6 +133,25 @@ public class BlockbusterServiceTest {
         verify(customerDAO).findBy(1L);
     }
 
+    @Test(expected = OutOfStockException.class)
+    public void testRentNotOk() throws OutOfStockException {
+        when(customerDAO.findBy(1L)).thenReturn(Optional.ofNullable(customer));
+
+        Customer customer = rentalService.findCustomerBy(1L);
+        Rental rental = null;
+        try {
+            rental = rentalService.rent(customer, outOfStockRentedFilms);
+        } catch (OutOfStockException e) {
+            // should not happen
+            fail();
+        }
+
+        assertThat(rental.calculateInitialPrice()).isEqualTo(130);
+        verify(customerDAO).findBy(1L);
+
+        rental = rentalService.rent(customer, outOfStockRentedFilms);
+    }
+
     @Test
     public void testReturnOk() {
         when(customerDAO.findBy(1L)).thenReturn(Optional.ofNullable(customer));
@@ -159,7 +188,7 @@ public class BlockbusterServiceTest {
             // should not happen
             fail();
         }
-        
+
         assertThat(rental.calculateAfterReturnPrice()).isEqualTo(180);
         verify(customerDAO).findBy(1L);
         verify(rentalDAO).findBy(1L);
